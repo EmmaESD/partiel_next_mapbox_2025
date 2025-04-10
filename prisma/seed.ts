@@ -104,28 +104,74 @@ async function main() {
 
   const NUM_CARS = 100;
 
+  // Points d'intérêt dans l'agglomération bordelaise
+  const bordeauxLocations = [
+    // Centre de Bordeaux
+    { name: "Place de la Bourse", lat: 44.8405, lng: -0.5699 },
+    { name: "Place des Quinconces", lat: 44.8452, lng: -0.5735 },
+    { name: "Rue Sainte-Catherine", lat: 44.8383, lng: -0.5733 },
+    { name: "Place de la Victoire", lat: 44.8307, lng: -0.5723 },
+    { name: "Place Gambetta", lat: 44.8398, lng: -0.5807 },
+    { name: "Quai des Chartrons", lat: 44.8515, lng: -0.5692 },
+    { name: "Place Pey Berland", lat: 44.8377, lng: -0.5783 },
+    { name: "Jardin Public", lat: 44.8485, lng: -0.5795 },
+    { name: "Gare Saint-Jean", lat: 44.8262, lng: -0.5563 },
+
+    // Mérignac
+    { name: "Aéroport de Mérignac", lat: 44.8283, lng: -0.7151 },
+    { name: "Mérignac Centre", lat: 44.8431, lng: -0.6458 },
+    { name: "Mérignac Soleil", lat: 44.8367, lng: -0.6631 },
+    { name: "Pin Galant", lat: 44.8359, lng: -0.6396 },
+
+    // Bègles
+    { name: "Centre de Bègles", lat: 44.8064, lng: -0.5533 },
+    { name: "Rives d'Arcins", lat: 44.8019, lng: -0.53 },
+    { name: "Terres Neuves", lat: 44.8124, lng: -0.5465 },
+
+    // Pessac
+    { name: "Centre de Pessac", lat: 44.8079, lng: -0.6325 },
+    { name: "Campus Pessac", lat: 44.7958, lng: -0.6156 },
+    { name: "Pessac Alouette", lat: 44.7868, lng: -0.643 },
+
+    // Talence
+    { name: "Centre de Talence", lat: 44.8089, lng: -0.5897 },
+    { name: "Campus Talence", lat: 44.815, lng: -0.5933 },
+    { name: "Peixotto", lat: 44.8107, lng: -0.5924 },
+
+    // Cenon / Rive Droite
+    { name: "Centre de Cenon", lat: 44.8487, lng: -0.5306 },
+    { name: "Palmer", lat: 44.8541, lng: -0.5253 },
+    { name: "Arena Floirac", lat: 44.8365, lng: -0.5266 },
+
+    // Eysines / Bruges
+    { name: "Eysines Centre", lat: 44.8867, lng: -0.6423 },
+    { name: "Bruges Centre", lat: 44.8741, lng: -0.6145 },
+    { name: "Les Aubiers", lat: 44.8682, lng: -0.5819 },
+
+    // Lormont / Carbon-Blanc
+    { name: "Lormont Génicart", lat: 44.8684, lng: -0.5261 },
+    { name: "Carbon-Blanc Centre", lat: 44.8925, lng: -0.5105 },
+  ];
+
   for (let i = 0; i < NUM_CARS; i++) {
-    const centerLat = 44.840115;
-    const centerLng = -0.570681;
-    const radiusInKm = 100;
+    // Sélectionner un emplacement aléatoire dans la liste
+    const locationIndex = Math.floor(Math.random() * bordeauxLocations.length);
+    const baseLocation = bordeauxLocations[locationIndex];
 
-    const randomDistance = radiusInKm * Math.sqrt(Math.random());
-    const randomAngle = Math.random() * 2 * Math.PI;
+    // Ajouter une variation aléatoire pour éparpiller les voitures
+    // Variation de ±0.003 (environ ±300 mètres)
+    const latVariation = randomBetween(-0.003, 0.003);
+    const lngVariation = randomBetween(-0.003, 0.003);
 
-    const latOffset = (randomDistance * Math.cos(randomAngle)) / 111;
-    const lngOffset =
-      (randomDistance * Math.sin(randomAngle)) /
-      (111 * Math.cos((centerLat * Math.PI) / 180));
-
-    const lat = centerLat + latOffset;
-    const lng = centerLng + lngOffset;
+    const lat = baseLocation.lat + latVariation;
+    const lng = baseLocation.lng + lngVariation;
 
     const randomIndex = Math.floor(Math.random() * carsTypes.length);
     const carType = carsTypes[randomIndex];
 
     const autonomy = Math.floor(randomBetween(50, 300));
 
-    const available = Math.random() < 0.5;
+    const available = Math.random() < 0.7; // 70% des voitures disponibles
 
     const car = await prisma.car.create({
       data: {
@@ -147,7 +193,7 @@ async function main() {
     });
 
     console.log(
-      `Voiture créée [id: ${car.id}] - Disponibilité: ${car.available} - Autonomie: ${car.autonomy} km - Position: (${car.lat}, ${car.lng})`
+      `Voiture créée [id: ${car.id}] - Emplacement: ${baseLocation.name} - Disponibilité: ${car.available} - Autonomie: ${car.autonomy} km - Position: (${car.lat}, ${car.lng})`
     );
   }
 }
