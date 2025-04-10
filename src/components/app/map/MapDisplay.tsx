@@ -48,7 +48,7 @@ const MapDisplay: React.FC = () => {
     if (!map && mapContainer.current) {
       const mapInstance = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         center: [2.3522, 48.8566],
         zoom: 12,
       });

@@ -6,6 +6,7 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { useMapContext } from "@/providers/MapContext";
+import { Search } from "lucide-react";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
@@ -32,6 +33,14 @@ const GeocoderInputs: React.FC = () => {
           setStartCoords(coords);
         }
       );
+
+      if (geocoderStartContainer.current) {
+        const input = geocoderStartContainer.current.querySelector('input');
+        if (input) {
+          input.style.opacity = '0.8';
+          input.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        }
+      }
     }
 
     if (geocoderEndContainer.current && mapboxgl.accessToken) {
@@ -49,6 +58,14 @@ const GeocoderInputs: React.FC = () => {
           setEndCoords(coords);
         }
       );
+
+      if (geocoderEndContainer.current) {
+        const input = geocoderEndContainer.current.querySelector('input');
+        if (input) {
+          input.style.opacity = '0.5';
+          input.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        }
+      }
     }
   }, [setStartCoords, setEndCoords]);
   const handleClick = () => {
@@ -60,15 +77,16 @@ const GeocoderInputs: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-lg">
+    <div className="flex flex-col gap-2 p-4 rounded-lg">
       <div className="flex gap-2 items-center justify-center">
         <div ref={geocoderStartContainer} className="w-64" />
         <div ref={geocoderEndContainer} className="w-64" />
         <button 
           onClick={handleClick}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200 flex items-center justify-center"
+          title="Calculer l'itinéraire"
         >
-          Calculer l'itinéraire
+          <Search size={20} />
         </button>
       </div>
     </div>
