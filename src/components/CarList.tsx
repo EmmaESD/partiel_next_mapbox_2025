@@ -64,9 +64,20 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-semibold mb-4">
-        {cars.length} voiture{cars.length > 1 ? 's' : ''} disponible{cars.length > 1 ? 's' : ''} dans un rayon de 100km
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold">
+          {cars.length} voiture{cars.length > 1 ? 's' : ''} disponible{cars.length > 1 ? 's' : ''} dans un rayon de 100km
+        </h2>
+        <button
+          onClick={() => {
+            const sortedCars = [...cars].sort((a, b) => b.autonomy - a.autonomy);
+            setCars(sortedCars);
+          }}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+        >
+          Trier par autonomie
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cars.map((car) => (
           <div
