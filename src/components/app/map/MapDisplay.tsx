@@ -43,8 +43,37 @@ const MapDisplay: React.FC = () => {
         console.log("Distance (m) :", distance);
         console.log("Durée (s) :", duration);
 
-        if (map.getSource("route")) {
-          (map.getSource("route") as mapboxgl.GeoJSONSource).setData(data);
+        if (!map.getSource("route")) {
+          map.addSource("route", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: data
+            }
+          });
+        } else {
+          (map.getSource("route") as mapboxgl.GeoJSONSource).setData({
+            type: "Feature",
+            properties: {},
+            geometry: data
+          });
+        }
+
+        if (!map.getLayer("route")) {
+          map.addLayer({
+            id: "route",
+            type: "line",
+            source: "route",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round"
+            },
+            paint: {
+              "line-color": "#3b82f6",
+              "line-width": 4
+            }
+          });
         }
       };
 
