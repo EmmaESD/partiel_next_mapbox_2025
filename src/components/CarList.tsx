@@ -2,6 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { MoreVertical } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { useMapContext } from "@/providers/MapContext";
 
 interface Car {
   id: number;
@@ -32,6 +42,12 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { 
+    filterByAutonomy, 
+    filterByDoors,
+    filterBySeats,
+    routeDistance 
+  } = useMapContext();
 
   useEffect(() => {
     if (show) {
@@ -45,7 +61,23 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
             throw new Error('Erreur lors de la récupération des voitures');
           }
           const data = await response.json();
-          setCars(data);
+          
+          // Appliquer les filtres
+          let filteredCars = data;
+          
+          if (filterByAutonomy) {
+            filteredCars = filteredCars.filter((car: Car) => car.autonomy >= routeDistance);
+          }
+          
+          if (filterByDoors !== null) {
+            filteredCars = filteredCars.filter((car: Car) => car.doors === filterByDoors);
+          }
+          
+          if (filterBySeats !== null) {
+            filteredCars = filteredCars.filter((car: Car) => car.seats === filterBySeats);
+          }
+          
+          setCars(filteredCars);
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Une erreur est survenue');
         } finally {
@@ -55,7 +87,7 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
 
       fetchCars();
     }
-  }, [center, show]);
+  }, [center, show, filterByAutonomy, filterByDoors, filterBySeats, routeDistance]);
 
   if (!show) return null;
   if (loading) return <div className="text-center p-4">Chargement des voitures disponibles...</div>;
@@ -64,12 +96,12 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
 
   return (
     <div className="fixed left-0 top-0 h-full w-72 overflow-y-auto scrollbar-hide py-11">
-      <div className="flex items-center gap-2 px-8">
+      <div className="flex items-center justify-between px-8">
         <h2 className="text-sm text-gray-500">
           {cars.length} Résultat{cars.length > 1 ? 's' : ''}
         </h2>
-        
       </div>
+
       <div className="flex flex-col gap-2 p-2 w-full">
         {cars.map((car) => (
           <div
