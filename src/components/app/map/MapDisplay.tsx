@@ -75,10 +75,17 @@ const MapDisplay: React.FC = () => {
             }
           });
         }
+
+        const bounds = new mapboxgl.LngLatBounds();
+        bounds.extend(start);
+        bounds.extend(end);
+        map.fitBounds(bounds, {
+          padding: 100,
+          duration: 1000
+        });
       };
 
       getRoute(startCoords, endCoords);
-      map.flyTo({ center: startCoords, zoom: 13 });
       setRouteRequested(false);
     }
   }, [map, routeRequested, startCoords, endCoords, setRouteRequested]);
