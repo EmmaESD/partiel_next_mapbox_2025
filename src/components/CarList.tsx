@@ -63,56 +63,45 @@ export default function CarList({ center, show, onSelectCar }: CarListProps) {
   if (cars.length === 0) return <div className="text-center p-4">Aucune voiture disponible dans un rayon de 100km</div>;
 
   return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">
-          {cars.length} voiture{cars.length > 1 ? 's' : ''} disponible{cars.length > 1 ? 's' : ''} dans un rayon de 100km
+    <div className="fixed left-0 top-0 h-full w-72 overflow-y-auto scrollbar-hide py-11">
+      <div className="flex items-center gap-2 px-8">
+        <h2 className="text-sm text-gray-500">
+          {cars.length} Résultat{cars.length > 1 ? 's' : ''}
         </h2>
-        <button
-          onClick={() => {
-            const sortedCars = [...cars].sort((a, b) => b.autonomy - a.autonomy);
-            setCars(sortedCars);
-          }}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
-        >
-          Trier par autonomie
-        </button>
+        
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex flex-col gap-2 p-2 w-full">
         {cars.map((car) => (
           <div
             key={car.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+            className="bg-white text-black border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow w-full flex items-center"
           >
             {car.image && (
-              <div className="relative h-48 w-full">
+              <div className="relative h-16 w-16 mr-3 flex-shrink-0">
                 <Image
                   src={car.image}
                   alt={`${car.brand} ${car.model}`}
                   fill
                   className="object-contain"
+                  sizes="(max-width: 400px) 50vw"
+                  priority={true}
                 />
               </div>
             )}
-            <div className="p-4">
-              <h3 className="text-xl font-bold mb-2">
+            <div className="flex-1 w-fit">
+              <h3 className="text-xs font-bold mb-1 truncate">
                 {car.brand} {car.model}
               </h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <p><span className="font-semibold">Distance:</span> {car.distance.toFixed(1)} km</p>
-                <p><span className="font-semibold">Autonomie:</span> {car.autonomy} km</p>
-                {car.power && <p><span className="font-semibold">Puissance:</span> {car.power} kW</p>}
-                {car.seats && <p><span className="font-semibold">Places:</span> {car.seats}</p>}
-                {car.doors && <p><span className="font-semibold">Portes:</span> {car.doors}</p>}
-                {car.year && <p><span className="font-semibold">Année:</span> {car.year}</p>}
-                {car.color && <p><span className="font-semibold">Couleur:</span> {car.color}</p>}
+              <div className="flex flex-col w-fit text-[10px] gap-0.5">
+                <p>Autonomie: {car.autonomy} km</p>
+                <p>Distance: {car.distance.toFixed(1)} km</p>
               </div>
-              <button
-                className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
-                onClick={() => onSelectCar?.(car)}
-              >
-                Sélectionner cette voiture
-              </button>
+            </div>
+            <div className="border-l w-fit border-gray-200 pl-3 ml-3">
+              <div className="flex flex-col justify-center w-fit text-[10px] gap-0.5">
+                <p>{car.seats} places</p>
+                <p>{car.doors} portes</p>
+              </div>
             </div>
           </div>
         ))}

@@ -66,7 +66,7 @@ const carsTypes = [
   {
     image:
       "https://images.dealer.com/ddc/vehicles/2023/Chevrolet/Bolt%20EV/Wagon/perspective/front-left/2023_76.png",
-    name: "Chevrolet Bolt EV",
+    name: "Chevrolet Bolt",
     description:
       "La Chevrolet Bolt EV offre un excellent compromis entre autonomie et performance.",
     autonomy: 259,
