@@ -21,7 +21,6 @@ interface Car {
 
 const MapDisplay: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
   const { 
     startCoords, 
     endCoords, 
@@ -38,21 +37,6 @@ const MapDisplay: React.FC = () => {
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [routeDistance, setLocalRouteDistance] = useState<number>(0);
   const [isRouteCalculated, setIsRouteCalculated] = useState<boolean>(false);
-
-  // Fonction pour créer un élément d'icône personnalisé
-  const createCustomMarkerElement = () => {
-    const element = document.createElement('div');
-    element.className = 'custom-marker';
-    element.innerHTML = `
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="#3b82f6">
-        <path d="M12 2C7.58 2 4 5.58 4 10c0 4.42 3.58 8 8 8s8-3.58 8-8c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/>
-        <path d="M7 9h10v2H7z"/>
-      </svg>
-    `;
-    element.style.width = '40px';
-    element.style.height = '40px';
-    return element;
-  };
 
   // Effet pour initialiser la carte
   useEffect(() => {
@@ -75,8 +59,6 @@ const MapDisplay: React.FC = () => {
       if (!map || !startCoords || !endCoords || !routeRequested) {
         // Réinitialiser l'état si les conditions ne sont pas remplies
         setCars([]);
-        markersRef.current.forEach(marker => marker.remove());
-        markersRef.current = [];
         setIsRouteCalculated(false);
         return;
       }
@@ -122,34 +104,6 @@ const MapDisplay: React.FC = () => {
           // Trier les voitures par autonomie
           filteredCars = filteredCars.sort((a: Car, b: Car) => b.autonomy - a.autonomy);
 
-          // Mettre à jour les marqueurs
-          markersRef.current.forEach(marker => marker.remove());
-          markersRef.current = [];
-
-          // Ajouter les nouveaux marqueurs
-          filteredCars.forEach((car: Car) => {
-            const marker = new mapboxgl.Marker({
-              element: createCustomMarkerElement()
-            })
-              .setLngLat([car.lng, car.lat])
-              .setPopup(
-                new mapboxgl.Popup({ offset: 25 }).setHTML(`
-                  <div style="padding: 10px;">
-                    <h3 style="margin: 0 0 10px 0; font-weight: bold;">${car.brand} ${car.model}</h3>
-                    <p style="margin: 5px 0;"><strong>Autonomie:</strong> ${car.autonomy} km</p>
-                    <p style="margin: 5px 0;"><strong>Distance du trajet:</strong> ${distance.toFixed(1)} km</p>
-                    <p style="margin: 5px 0;"><strong>Distance jusqu'à la voiture:</strong> ${car.distance.toFixed(1)} km</p>
-                    <p style="margin: 5px 0;"><strong>Portes:</strong> ${car.doors}</p>
-                    <p style="margin: 5px 0;"><strong>Places:</strong> ${car.seats}</p>
-                    ${car.image ? `<img src="${car.image}" alt="${car.brand} ${car.model}" style="width: 100%; height: auto; margin-top: 10px;">` : ''}
-                  </div>
-                `)
-              )
-              .addTo(map);
-
-            markersRef.current.push(marker);
-          });
-
           setCars(filteredCars);
           setIsRouteCalculated(true);
         }
@@ -185,39 +139,9 @@ const MapDisplay: React.FC = () => {
       
       console.log('Nombre de voitures après re-filtrage:', filteredCars.length);
 
-      // Mettre à jour les marqueurs
-      markersRef.current.forEach(marker => marker.remove());
-      markersRef.current = [];
-
-      // Ajouter les nouveaux marqueurs
-      filteredCars.forEach((car: Car) => {
-        if (map) {
-          const marker = new mapboxgl.Marker({
-            element: createCustomMarkerElement()
-          })
-            .setLngLat([car.lng, car.lat])
-            .setPopup(
-              new mapboxgl.Popup({ offset: 25 }).setHTML(`
-                <div style="padding: 10px;">
-                  <h3 style="margin: 0 0 10px 0; font-weight: bold;">${car.brand} ${car.model}</h3>
-                  <p style="margin: 5px 0;"><strong>Autonomie:</strong> ${car.autonomy} km</p>
-                  <p style="margin: 5px 0;"><strong>Distance du trajet:</strong> ${routeDistance.toFixed(1)} km</p>
-                  <p style="margin: 5px 0;"><strong>Distance jusqu'à la voiture:</strong> ${car.distance.toFixed(1)} km</p>
-                  <p style="margin: 5px 0;"><strong>Portes:</strong> ${car.doors}</p>
-                  <p style="margin: 5px 0;"><strong>Places:</strong> ${car.seats}</p>
-                  ${car.image ? `<img src="${car.image}" alt="${car.brand} ${car.model}" style="width: 100%; height: auto; margin-top: 10px;">` : ''}
-                </div>
-              `)
-            )
-            .addTo(map);
-
-          markersRef.current.push(marker);
-        }
-      });
-
       setCars(filteredCars);
     }
-  }, [filterByAutonomy, filterByDoors, filterBySeats, isRouteCalculated, cars, routeDistance, map, setCars]);
+  }, [filterByAutonomy, filterByDoors, filterBySeats, isRouteCalculated, cars, routeDistance, setCars]);
 
   // Effet pour gérer l'affichage de l'itinéraire
   useEffect(() => {
