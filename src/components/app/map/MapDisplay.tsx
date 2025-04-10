@@ -40,16 +40,68 @@ const MapDisplay: React.FC = () => {
         const distance = route.distance; // en mètres
         const duration = route.duration; // en secondes
 
-        console.log("Distance (m) :", distance);
-        console.log("Durée (s) :", duration);
+        // Conversion des unités
+        const distanceKm = (distance / 1000).toFixed(1);
+        const durationMinutes = Math.round(duration / 60);
 
-        if (map.getSource("route")) {
-          (map.getSource("route") as mapboxgl.GeoJSONSource).setData(data);
+        // Ajout de la source de l'itinéraire si elle n'existe pas
+        if (!map.getSource("route")) {
+          map.addSource("route", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: data
+            }
+          });
+        } else {
+          (map.getSource("route") as mapboxgl.GeoJSONSource).setData({
+            type: "Feature",
+            properties: {},
+            geometry: data
+          });
         }
+
+        // Ajout du style de la ligne si elle n'existe pas
+        if (!map.getLayer("route")) {
+          map.addLayer({
+            id: "route",
+            type: "line",
+            source: "route",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round"
+            },
+            paint: {
+              "line-color": "#3b82f6",
+              "line-width": 4
+            }
+          });
+        }
+
+        // Création du popup avec les détails de l'itinéraire
+        const popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false })
+          .setLngLat(start)
+          .setHTML(`
+            <div style="padding: 10px;">
+              <h3 style="margin: 0 0 10px 0; color: #3b82f6;">Détails de l'itinéraire</h3>
+              <p style="margin: 5px 0;"><strong>Distance :</strong> ${distanceKm} km</p>
+              <p style="margin: 5px 0;"><strong>Durée estimée :</strong> ${durationMinutes} minutes</p>
+            </div>
+          `)
+          .addTo(map);
+
+        // Ajustement automatique du zoom pour voir l'itinéraire complet
+        const bounds = new mapboxgl.LngLatBounds();
+        bounds.extend(start);
+        bounds.extend(end);
+        map.fitBounds(bounds, {
+          padding: 100,
+          duration: 1000
+        });
       };
 
       getRoute(startCoords, endCoords);
-      map.flyTo({ center: startCoords, zoom: 13 });
       setRouteRequested(false);
     }
   }, [map, routeRequested, startCoords, endCoords, setRouteRequested]);

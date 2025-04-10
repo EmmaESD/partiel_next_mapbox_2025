@@ -19,7 +19,7 @@ const GeocoderInputs: React.FC = () => {
     if (geocoderStartContainer.current && mapboxgl.accessToken) {
       const geocoderStart = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken as string,
-        mapboxgl: mapboxgl,
+        mapboxgl: mapboxgl as any,
         placeholder: "Adresse de départ",
         marker: false,
       });
@@ -34,10 +34,10 @@ const GeocoderInputs: React.FC = () => {
       );
     }
 
-    if (geocoderEndContainer.current && mapboxgl.accessToken && mapboxgl) {
+    if (geocoderEndContainer.current && mapboxgl.accessToken) {
       const geocoderEnd = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken as string,
-        mapboxgl: mapboxgl,
+        mapboxgl: mapboxgl as any,
         placeholder: "Adresse d'arrivée",
         marker: false,
       });
@@ -60,11 +60,16 @@ const GeocoderInputs: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 ">
+    <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-lg">
       <div className="flex gap-2 items-center justify-center">
-        <div ref={geocoderStartContainer} className="" />
-        <div ref={geocoderEndContainer} />
-        <button onClick={handleClick}>Search</button>
+        <div ref={geocoderStartContainer} className="w-64" />
+        <div ref={geocoderEndContainer} className="w-64" />
+        <button 
+          onClick={handleClick}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+        >
+          Calculer l'itinéraire
+        </button>
       </div>
     </div>
   );
