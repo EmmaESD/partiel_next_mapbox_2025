@@ -6,10 +6,27 @@ import MapDisplay from "@/components/app/map/MapDisplay";
 import { useMapContext } from "@/providers/MapContext";
 import CarList from "@/components/CarList";
 
+// Interface pour le type de voiture
+interface Car {
+  id: number;
+  name: string;
+  model: string;
+  brand: string;
+  autonomy: number;
+  available: boolean;
+  image?: string;
+  power?: number;
+  seats?: number;
+  doors?: number;
+  year?: number;
+  color?: string;
+  distance: number;
+}
+
 const Home: React.FC = () => {
   const { startCoords, endCoords } = useMapContext();
 
-  const handleSelectCar = (car: any) => {
+  const handleSelectCar = (car: Car) => {
     // TODO: Implémenter la logique de sélection de voiture
     console.log('Voiture sélectionnée:', car);
   };

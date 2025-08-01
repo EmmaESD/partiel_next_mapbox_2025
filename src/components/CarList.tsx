@@ -2,15 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MoreVertical } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { useMapContext } from "@/providers/MapContext";
 
 interface Car {
@@ -38,7 +29,7 @@ interface CarListProps {
   onSelectCar?: (car: Car) => void;
 }
 
-export default function CarList({ center, show, onSelectCar }: CarListProps) {
+export default function CarList({ center, show}: CarListProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
