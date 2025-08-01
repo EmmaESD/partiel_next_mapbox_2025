@@ -32,7 +32,6 @@ const MapDisplay: React.FC = () => {
     filterByAutonomy,
     filterByDoors,
     filterBySeats,
-    triggerRoute,
   } = useMapContext();
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [routeDistance, setLocalRouteDistance] = useState<number>(0);
@@ -202,6 +201,7 @@ const MapDisplay: React.FC = () => {
             </div>
           `)
           .addTo(map);
+        console.log(popup);
 
         const bounds = new mapboxgl.LngLatBounds();
         bounds.extend(startCoords);
@@ -232,14 +232,14 @@ const MapDisplay: React.FC = () => {
     }
   }, [map, startCoords, endCoords]);
 
-  const handleClick = () => {
-    if (!startCoords || !endCoords) {
-      alert("Veuillez sélectionner les deux adresses.");
-      return;
-    }
-    setRouteRequested(false); 
-    triggerRoute();
-  };
+  // const handleClick = () => {
+  //   if (!startCoords || !endCoords) {
+  //     alert("Veuillez sélectionner les deux adresses.");
+  //     return;
+  //   }
+  //   setRouteRequested(false); 
+  //   triggerRoute();
+  // };
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>

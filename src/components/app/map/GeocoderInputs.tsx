@@ -46,6 +46,7 @@ const GeocoderInputs: React.FC = () => {
     if (geocoderStartContainer.current && mapboxgl.accessToken) {
       const geocoderStart = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken as string,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mapboxgl: mapboxgl as any,
         placeholder: "Adresse de départ",
         marker: false,
@@ -72,6 +73,7 @@ const GeocoderInputs: React.FC = () => {
     if (geocoderEndContainer.current && mapboxgl.accessToken) {
       const geocoderEnd = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken as string,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mapboxgl: mapboxgl as any,
         placeholder: "Adresse d'arrivée",
         marker: false,
