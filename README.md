@@ -8,7 +8,6 @@ carLink est une application web développée avec Next.js et Mapbox qui permet a
 - **Gestion des véhicules électriques** : 
   - Affichage des véhicules disponibles
   - Filtrage des véhicules selon différents critères
-  - Conditions de location
 
 ## Technologies Utilisées
 - Next.js
@@ -50,7 +49,7 @@ npm install
 5. **Initialiser la base de données**
 ```bash
 npx prisma db push
-npx ts-node prisma/seed.ts
+npx ts-node -P tsconfig.seed.json prisma/seed.ts
 ```
 
 6. **Lancer l'application**
@@ -67,20 +66,4 @@ L'application sera accessible à l'adresse : http://localhost:3000
 - `/styles` : Fichiers CSS
 
 ## Contribution
-Ce projet a été développé dans le cadre d'un partiel. Pour toute contribution, veuillez créer une issue ou une pull request.
-
-## Licence
-Ce projet est sous licence MIT.
-
-```bash
-# mount containers
-docker-compose up -d
-# install dependencies
-npm install
-# push db
-npx prisma db push
-# seed database
-npx ts-node prisma/seed.ts
-# start app
-npm run dev
-```
+Ce projet a été développé dans le cadre d'un partiel. 
